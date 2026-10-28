@@ -28,6 +28,13 @@ DEFAULT_TIMEOUT: int = 10
 MINUTES_PER_DAY: int = 1440
 KYIV_TZ = ZoneInfo("Europe/Kyiv")
 
+# ANSI color codes for terminal output
+ANSI_GREEN: str = "\033[92m"
+ANSI_RED: str = "\033[91m"
+ANSI_NOW: str = "\033[1;38;2;255;255;0m"  # bold pure yellow (truecolor)
+NOW_BLOCK: str = "█"
+ANSI_RESET: str = "\033[0m"
+
 # Universal mapping for regions serviced by Yasno/DTEK
 CITY_MAPPING: Mapping[str, tuple[int, int]] = {
     # Kyiv City (DTEK Kyiv Grids)
@@ -209,9 +216,10 @@ def render_day_schedule(
 
     now = datetime.now(KYIV_TZ)
     current_minute = now.hour * 60 + now.minute
+    current_idx = current_minute // 30
 
     # Initialize a 48-block timeline array (each block = 30 mins), default to Power ON
-    timeline_blocks = ["█"] * 48
+    raw_blocks = ["█"] * 48
 
     for slot in slots:
         if not isinstance(slot, Mapping):
@@ -231,7 +239,7 @@ def render_day_schedule(
             end_idx = end // 30
             for i in range(start_idx, end_idx):
                 if i < 48:
-                    timeline_blocks[i] = "░"
+                    raw_blocks[i] = "░"
         else:
             power_minutes += duration
             status_icon = "🟢 POWER ON  "
@@ -255,9 +263,24 @@ def render_day_schedule(
     print(f"  • Total without power: {format_duration(outage_minutes):<8} ({outage_pct:.1f}% of day)")
     print(f"  • Total with power   : {format_duration(power_minutes):<8} ({power_pct:.1f}% of day)")
 
+    # Apply ANSI colors to the timeline blocks
+    colored_blocks: list[str] = []
+    for idx, block in enumerate(raw_blocks):
+        if is_today and idx == current_idx:
+            colored_blocks.append(f"{ANSI_NOW}{NOW_BLOCK}{ANSI_RESET}")
+        elif block == "█":
+            colored_blocks.append(f"{ANSI_GREEN}{block}{ANSI_RESET}")
+        else:
+            colored_blocks.append(f"{ANSI_RED}{block}{ANSI_RESET}")
+
     # Render the chronological timeline chart
-    timeline_str = "".join(timeline_blocks)
-    print("\n Timeline (█ = Power, ░ = Outage):")
+    timeline_str = "".join(colored_blocks)
+    legend = f"{ANSI_GREEN}█{ANSI_RESET} = Power, {ANSI_RED}░{ANSI_RESET} = Outage"
+    if is_today and 0 <= current_idx < 48:
+        now_str = now.strftime("%H:%M")
+        legend += f", {ANSI_NOW}{NOW_BLOCK} = Now ({now_str}){ANSI_RESET}"
+
+    print(f"\n Timeline ({legend}):")
     print(f"  [{timeline_str}]")
     print("  00          06          12          18          24")
 
@@ -282,7 +305,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--group",
-        help="Explicit group code (e.g., '19.1') to skip address search.",
+        help="Explicit group code (e.g., '3') to skip address search.",
     )
     parser.add_argument(
         "--region-id",
