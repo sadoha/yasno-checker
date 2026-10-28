@@ -38,7 +38,7 @@ docker run --rm sadoha/yasno-checker:1.0.1 --city "kyiv" --street "Хрещат�
 ```
 2. Execute a request by exact group identifier (safely including the city):
 ```bash
-docker run --rm sadoha/yasno-checker:1.0.1 --city "kyiv" --group "5.1"
+docker run --rm sadoha/yasno-checker:1.0.1 --city "kyiv" --group "19.1"
 ```
 3. View all available arguments:
 ```bash
