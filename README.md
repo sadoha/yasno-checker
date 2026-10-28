@@ -31,32 +31,31 @@ By exact group identifier:
 
 > **Important Note on Group Codes:** When you pass `--group "19.1"`, the script skips the address resolution step (where the `regionId` is primarily needed) and directly queries the Yasno API for that group's schedule. Because Yasno returns schedules for all groups at once, the script will find it as long as a group with that name exists in the response, regardless of the city passed. However, to be absolutely certain (or in case different regions eventually introduce groups with identical names), it is highly recommended to always pass the `--city` parameter alongside the group.
 
-## Running via Docker (Pre-built Image)
+## Running via Docker Hub (Pre-built Image)
 
-You can run the script securely without installing Python dependencies by using the pre-built Docker image. 
-*(Note: Replace `your-registry/yasno-checker:latest` with your actual image tag, e.g., from GitLab Container Registry).*
+You can run the script securely without installing Python dependencies by using the pre-built Docker image hosted on Docker Hub.
 
 1. Execute a request by address (the container is automatically removed after completion):
 
-    docker run --rm your-registry/yasno-checker:latest --city "kyiv" --street "Хрещатик" --house "22"
+    docker run --rm sadoha/yasno-checker:1.0.1 --city "kyiv" --street "Хрещатик" --house "22"
 
 2. Execute a request by exact group identifier (safely including the city):
 
-    docker run --rm your-registry/yasno-checker:latest --city "kyiv" --group "19.1"
+    docker run --rm sadoha/yasno-checker:1.0.1 --city "kyiv" --group "19.1"
 
 3. View all available arguments:
 
-    docker run --rm your-registry/yasno-checker:latest --help
+    docker run --rm sadoha/yasno-checker:1.0.1 --help
 
 ## Building the Docker Image Locally (Optional)
 
-If you need to build the image yourself directly from the source code, run:
+If you need to build the image yourself directly from the source code, run the following command in the project directory:
 
     docker build -t yasno-checker:local .
 
-Then you can use it just like the pre-built image:
+Once the local image is built, you can run it to fetch schedules and get the script's output directly in your terminal, just like the pre-built one:
 
-    docker run --rm yasno-checker:local --help
+    docker run --rm yasno-checker:local --city "dnipro" --street "Фабра Андрія" --house "2"
 
 ## Architecture & Security
 - **Strict DRY & Typing:** 100% compatible with strict typing checks.
