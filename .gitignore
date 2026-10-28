@@ -1,0 +1,26 @@
+# - Defines files and directories to be excluded from GitLab version control
+# - Prevents tracking of local secrets, virtual environments, and compiled artifacts
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Secrets and local configurations
+.env
+
+# Editor and IDE configurations
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
