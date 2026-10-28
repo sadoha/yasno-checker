@@ -7,8 +7,8 @@
 
 Usage:
     python3 yasno_check.py --city "Kyiv" --street "Хрещатик" --house "22"
-    python3 yasno_check.py --city "Dnipro" --street "Фабра Андрія" --house "2"
-    python3 yasno_check.py --group "19.1"
+    python3 yasno_check.py --city "Kyiv Region" --street "Шевченка" --house "1"
+    python3 yasno_check.py --group "3"
 """
 
 from __future__ import annotations
@@ -34,10 +34,6 @@ CITY_MAPPING: Mapping[str, tuple[int, int]] = {
     "київ": (25, 902),
     "kyiv": (25, 902),
     "kiev": (25, 902),
-    # Dnipro & Dnipropetrovsk Region (DTEK Dnipro Grids)
-    "дніпро": (9, 904),
-    "dnipro": (9, 904),
-    "дніпропетровська область": (9, 904),
     # Kyiv Region (DTEK Kyiv Regional Grids)
     "київська область": (10, 903),
     "kyiv region": (10, 903),
@@ -229,7 +225,7 @@ def render_day_schedule(
             outage_minutes += duration
             outage_count += 1
             status_icon = "🔴 NO POWER  "
-            
+
             # Map outage slots to the visual timeline (30 mins per index)
             start_idx = start // 30
             end_idx = end // 30
@@ -258,7 +254,7 @@ def render_day_schedule(
     print(f"  • Outage count       : {outage_count}")
     print(f"  • Total without power: {format_duration(outage_minutes):<8} ({outage_pct:.1f}% of day)")
     print(f"  • Total with power   : {format_duration(power_minutes):<8} ({power_pct:.1f}% of day)")
-    
+
     # Render the chronological timeline chart
     timeline_str = "".join(timeline_blocks)
     print("\n Timeline (█ = Power, ░ = Outage):")
@@ -274,7 +270,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--city",
         default="kyiv",
-        help="City name (e.g., 'Kyiv', 'Dnipro', 'Київ'). Default is 'Kyiv'.",
+        help="City name (e.g., 'Kyiv', 'Київ', 'Kyiv Region'). Default is 'Kyiv'.",
     )
     parser.add_argument(
         "--street",

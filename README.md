@@ -1,6 +1,6 @@
 # Yasno Power Outage CLI
 
-A command-line interface tool to quickly fetch up-to-date power outage schedules (both stabilization and emergency) directly from the Yasno API. Supports Kyiv, Dnipro, and the Kyiv region.
+A command-line interface tool to quickly fetch up-to-date power outage schedules (both stabilization and emergency) directly from the Yasno API. Supports Kyiv and the Kyiv region.
 
 ## Prerequisites
 - **Python:** 3.10+ (for local execution)
@@ -20,10 +20,6 @@ pip install -r requirements.txt
 By address in Kyiv (default city):
 ```bash
 ./venv/bin/python3 yasno_check.py --street "Хрещатик" --house "22"
-```
-By address in Dnipro:
-```bash
-./venv/bin/python3 yasno_check.py --city "dnipro" --street "вул. Дмитра Яворницького" --house "6A"
 ```
 By exact group identifier:
 ```bash
@@ -56,7 +52,7 @@ docker build -t yasno-checker:local .
 ```
 Once the local image is built, you can run it to fetch schedules and get the script's output directly in your terminal, just like the pre-built one:
 ```bash
-docker run --rm yasno-checker:local --city "dnipro" --street "вул. Дмитра Яворницького" --house "6A"
+docker run --rm yasno-checker:local --city "kyiv" --street "Хрещатик" --house "22"
 ```
 ## Architecture & Security
 - **Strict DRY & Typing:** 100% compatible with strict typing checks.
